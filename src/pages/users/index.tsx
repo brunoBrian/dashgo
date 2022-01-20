@@ -5,31 +5,17 @@ import { RiAddLine } from "react-icons/ri";
 import { Header } from "../../components/Header";
 import { Pagination } from "../../components/Pagination";
 import { Sidebar } from "../../components/Sidebar";
-// import { getUsers, useUsers } from "../../services/hooks/useUsers";
+import { getUsers, useUsers } from "../../services/hooks/useUsers";
 import { useState } from "react";
-// import { queryClient } from "../../services/queryClient";
-// import { api } from "../../services/api";
+import { queryClient } from "../../services/queryClient";
+import { api } from "../../services/api";
 import { GetServerSideProps } from "next";
 
 export default function UserList({ users }) {
   const [page, setPage] = useState(1);
-//   const { data, isLoading, isFetching, error } = useUsers(page, {
-//     initialData: users,
-//   })
-
-    const error = false;
-    const isFetching = false;
-    const isLoading = false;
-    const data = {
-        users: [
-            {
-                id: 1,
-                name: "Bruno SOusa",
-                email: "bruno.sousa@teste.com",
-                createdAt: ''
-            }
-        ]
-    }
+  const { data, isLoading, isFetching, error } = useUsers(page, {
+    initialData: users,
+  })
 
   const isWideVersion = useBreakpointValue({
     base: false,
@@ -37,15 +23,13 @@ export default function UserList({ users }) {
   })
 
   async function handlePrefetchUser(userId: string) {
-    // await queryClient.prefetchQuery(['user', userId], async () => {
-    //   const response = await api.get(`users/${userId}`)
+    await queryClient.prefetchQuery(['user', userId], async () => {
+      const response = await api.get(`users/${userId}`)
 
-    //   return response.data;
-    // }, {
-    //   staleTime: 1000 * 60 * 10, // 10 minutes
-    // })
-
-    console.log(userId);
+      return response.data;
+    }, {
+      staleTime: 1000 * 60 * 10, // 10 minutes
+    })
   }
 
   return (
@@ -119,8 +103,7 @@ export default function UserList({ users }) {
               </Table>
 
               <Pagination
-                totalCountOfRegisters={5}
-                // totalCountOfRegisters={data.totalCount}
+                totalCountOfRegisters={data.totalCount}
                 currentPage={page}
                 onPageChange={setPage}
               />
@@ -132,12 +115,12 @@ export default function UserList({ users }) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-//   const { users, totalCount } = await getUsers(1)
+// export const getServerSideProps: GetServerSideProps = async () => {
+//   const { users } = await getUsers(1)
 
-  return {
-    props: {
-      users: [],
-    }
-  }
-}
+//   return {
+//     props: {
+//       users,
+//     }
+//   }
+// }
